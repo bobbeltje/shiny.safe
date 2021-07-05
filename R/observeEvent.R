@@ -4,12 +4,18 @@
 #' @param ...
 #'
 #' @export
-observeEvent <- function(...){
+observeEvent <- function(
+  eventExpr, handlerExpr, event.env = parent.frame(),
+  event.quoted = FALSE, handler.env = parent.frame(), handler.quoted = FALSE,
+  ..., label = NULL, suspended = FALSE, priority = 0, domain = getDefaultReactiveDomain(),
+  autoDestroy = TRUE, ignoreNULL = TRUE, ignoreInit = FALSE,
+  once = FALSE
+){
 
   fc <- match.call(expand.dots = TRUE)
-  expr <- fc[[3]]
+  expr <- fc$handlerExpr
 
-  fc[[3]] <- quote({
+  fc$handlerExpr <- quote({
 
     r <- try(expr=eval(expr), silent=TRUE)
 
