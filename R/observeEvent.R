@@ -15,6 +15,19 @@ observeEvent <- function(...){
 
     if (inherits(r, 'try-error')){
 
+      fn <- function(){}
+      body(fn) <- expr
+
+      l <- list()
+      for (i in rutils::findGlobals(fn)){
+        if (!exists(i)) next
+        x <- get(i)
+        l[[i]] <- if (is.reactivevalues(x)) reactiveValuesToList(x) else x
+      }
+
+      message('saving state')
+      saveRDS(l, 'tmp.rds')
+
       showNotification(r[[1]], type='error')
     }
   })
